@@ -1,606 +1,652 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Click-to-Earn — Playful Naira Rewards</title>
-<meta name="description" content="Play Click-to-Earn: beat the high score to earn Naira. Share to unlock withdraw!" />
-<style>
-  :root{
-    --bg1:#fff6fb;
-    --bg2:#fffbe8;
-    --accent:#ff6b6b;
-    --accent2:#ffd93d;
-    --card:#ffffffee;
-    --muted:#6b6b6b;
-    --glass: rgba(255,255,255,0.65);
-    --success:#28c76f;
-  }
-  *{box-sizing:border-box}
-  html,body{height:100%}
-  body{
-    margin:0;
-    font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-    background: radial-gradient(circle at 10% 20%, var(--bg1) 0%, transparent 30%),
-                radial-gradient(circle at 90% 80%, var(--bg2) 0%, transparent 30%),
-                linear-gradient(120deg,#a1c4fd 0%, #c2e9fb 50%, #f6d365 100%);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:18px;
-    -webkit-font-smoothing:antialiased;
-  }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Portfolio | Full Stack Engineer</title>
+    <!-- Tailwind for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0a0a0c;
+        }
+        .font-mono {
+            font-family: 'Fira Code', monospace;
+        }
+        /* Custom scrollbar for better aesthetic */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0a0c;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 10px;
+        }
+        .modal-active {
+            overflow: hidden;
+        }
+        .modal-active #main-wrapper {
+            filter: blur(12px) scale(0.98);
+            opacity: 0.5;
+            transition: all 0.5s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+        /* Carousel Styles */
+        .carousel-container {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
 
-  .container{
-    width:100%;
-    max-width:980px;
-    background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(255,255,255,0.9));
-    border-radius:18px;
-    box-shadow: 0 18px 40px rgba(12,34,60,0.12);
-    padding:22px;
-    display:flex;
-    gap:18px;
-    align-items:stretch;
-  }
-
-  @media (max-width:900px){ .container{flex-direction:column;padding:16px} }
-
-  /* Left - main */
-  .main {
-    flex:1;
-    padding:18px;
-    border-radius:14px;
-    background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,255,255,0.92));
-    box-shadow: inset 0 -6px 18px rgba(0,0,0,0.02);
-    position:relative;
-    overflow:hidden;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-  }
-
-  .title { text-align:center; margin-bottom:8px; }
-  .title h1{ font-size:26px; margin:6px 0; color:#222; }
-  .title p{ margin:0;color:var(--muted); font-size:14px }
-
-  /* centered big button */
-  .center-wrap { display:flex; align-items:center; justify-content:center; width:100%; padding:18px 0; }
-  .big-btn {
-    width:260px;
-    height:260px;
-    border-radius:50%;
-    background: radial-gradient(circle at 30% 30%, #fff 0%, #ffeceb 40%, #ffdede 70%, var(--accent) 100%);
-    display:flex; align-items:center; justify-content:center;
-    font-size:30px; color:#241a1a; font-weight:900;
-    cursor:pointer; user-select:none;
-    box-shadow: 0 22px 40px rgba(255,107,107,0.22), inset 0 -12px 34px rgba(0,0,0,0.06);
-    transition: transform 160ms ease, box-shadow 160ms ease;
-  }
-
-  .big-btn:active{ transform: scale(.98) }
-  /* dance */
-  .big-btn.dance { animation: dance 700ms ease-in-out infinite; }
-  @keyframes dance {
-    0% { transform: translateY(0) rotate(0deg) scale(1); }
-    25% { transform: translateY(-8px) rotate(-5deg) scale(1.03); }
-    50% { transform: translateY(0) rotate(4deg) scale(1); }
-    75% { transform: translateY(-6px) rotate(-3deg) scale(1.02); }
-    100% { transform: translateY(0) rotate(0deg) scale(1); }
-  }
-
-  /* stats */
-  .stats { display:flex; gap:12px; margin-top:14px; flex-wrap:wrap; justify-content:center; }
-  .card { background:var(--card); padding:10px 14px; border-radius:10px; min-width:120px; text-align:center; box-shadow:0 8px 18px rgba(16,32,64,0.05); }
-  .card .big { font-size:20px; font-weight:800; color:#222 }
-  .card .label { font-size:12px; color:var(--muted); margin-top:6px }
-
-  /* right - controls */
-  .side {
-    width:320px;
-    padding:14px;
-    border-radius:12px;
-    background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,255,255,0.95));
-    box-shadow: 0 8px 20px rgba(18,38,63,0.06);
-    display:flex; flex-direction:column;
-  }
-  @media (max-width:900px){ .side{ width:100%; order:3 } }
-
-  .controls .row { display:flex; align-items:center; gap:8px; margin-bottom:10px; }
-  label { flex:1; font-size:14px; color:#333; }
-  select, input[type=number] { padding:9px; border-radius:8px; border:1px solid #eee; font-size:14px; min-width:80px; }
-
-  .btn { padding:10px 12px; border-radius:10px; border:none; font-weight:700; cursor:pointer; }
-  .btn.primary { background: linear-gradient(180deg,var(--accent), #ff3b3b); color:white; box-shadow:0 8px 18px rgba(255,107,107,0.18); }
-  .btn.ghost { background:transparent; border:1px solid #eee; color:#333; }
-
-  .share-btn { background:#25D366; color:white; border:none; padding:10px; border-radius:10px; font-weight:700; cursor:pointer; width:100%; display:flex; gap:8px; align-items:center; justify-content:center; }
-
-  .share-progress { margin-top:8px; font-size:13px; color:var(--muted); text-align:center; }
-
-  .withdraw {
-    margin-top:12px;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap:8px;
-  }
-
-  .withdraw .locked {
-    opacity:0.6;
-    transform:scale(.98);
-    transition: all 300ms ease;
-  }
-
-  .withdraw .unlocked {
-    animation: popIn 700ms cubic-bezier(.2,.9,.3,1);
-    box-shadow: 0 18px 36px rgba(40,199,111,0.18);
-  }
-
-  @keyframes popIn {
-    0% { transform: translateY(20px) scale(.9); opacity:0; }
-    60% { transform: translateY(-8px) scale(1.03); opacity:1; }
-    100% { transform: translateY(0) scale(1); }
-  }
-
-  /* modal */
-  .modal-backdrop{ position:fixed; inset:0; background: rgba(0,0,0,0.45); display:none; align-items:center; justify-content:center; z-index:50; }
-  .modal{ background:white; padding:18px; border-radius:12px; width:90%; max-width:420px; box-shadow:0 18px 40px rgba(0,0,0,0.25); }
-  .modal h3{ margin:0 0 8px; }
-  .modal .row{ margin-bottom:10px; }
-
-  /* confetti canvas */
-  #confetti{ position:absolute; inset:0; pointer-events:none; z-index:5; }
-
-  .note { font-size:12px; color:var(--muted); margin-top:10px; text-align:center; }
-
-</style>
+        /* Full Screen Gallery Overlay */
+        #fullscreen-gallery.active {
+            display: flex;
+            animation: fadeInOverlay 0.4s ease-out forwards;
+        }
+        @keyframes fadeInOverlay {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
 </head>
-<body>
-  <div class="container" role="main" aria-label="Click-to-Earn Game">
-    <div class="main" id="mainArea">
-      <canvas id="confetti"></canvas>
+<body class="text-slate-300 selection:bg-emerald-500/30 p-4 md:p-8">
 
-      <div class="title">
-        <h1>Click-to-Earn 🎉</h1>
-        <p>Beat the high score to earn Naira. Share to unlock Withdraw!</p>
-      </div>
-
-      <div class="center-wrap">
-        <div id="bigBtn" class="big-btn" role="button" tabindex="0">🎯 TAP FAST🎯 </div>
-      </div>
-
-      <div class="stats" aria-live="polite">
-        <div class="card">
-          <div class="big" id="score">0</div>
-          <div class="label">Score</div>
-        </div>
-        <div class="card">
-          <div class="big" id="time">10s</div>
-          <div class="label">Time Left</div>
-        </div>
-        <div class="card">
-          <div class="big" id="high">0</div>
-          <div class="label">High Score</div>
-        </div>
-        <div class="card">
-          <div class="big" id="wallet">₦0</div>
-          <div class="label">Wallet Balance</div>
-        </div>
-      </div>
-
-      <div class="note" id="tip">Tip: Press Start or tap the big button if Auto-start is ON.</div>
-    </div>
-
-    <aside class="side" aria-label="Controls">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <strong>Game Controls</strong>
-        <small style="color:var(--muted)">Playful • Naira</small>
-      </div>
-
-      <div class="controls" style="margin-top:8px">
-        <div class="row">
-          <label for="duration">Duration</label>
-          <select id="duration"><option value="5">5s</option><option value="10" selected>10s</option><option value="15">15s</option><option value="30">30s</option></select>
-        </div>
-
-        <div class="row">
-          <label for="autostart">Auto-start</label>
-          <select id="autostart"><option value="yes">Yes</option><option value="no" selected>No</option></select>
-        </div>
-
-        <div class="row">
-          <label>Sound</label>
-          <button id="mute" class="btn ghost">Mute</button>
-        </div>
+    <div id="main-wrapper" class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 transition-all duration-500">
         
-        <audio id="bgMusic" loop>
-  <source src="music.mp3" type="audio/mpeg">
-</audio>
+        <!-- Sidebar -->
+        <aside class="lg:col-span-3 space-y-6">
+            <div class="bg-[#111114] border border-slate-800 rounded-2xl overflow-hidden shadow-2xl sticky top-8">
+                <!-- Header Image -->
+                <div class="h-32 w-full relative overflow-hidden">
+                   <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=600" class="w-full h-full object-cover" alt="cover">
+                   <div class="absolute inset-0 bg-gradient-to-t from-[#111114] via-transparent to-transparent"></div>
+                </div>
 
-        <div style="display:flex;gap:8px;margin-top:6px">
-          <button id="start" class="btn primary">Start</button>
-          <button id="reset" class="btn ghost">Reset Highscore</button>
-        </div>
+                <div class="px-6 pb-6">
+                    <!-- Profile Pic -->
+                    <div class="relative w-28 h-28 mx-auto -mt-14 mb-4">
+                        <div class="absolute inset-0 bg-emerald-500 rounded-full blur-2xl opacity-30"></div>
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" class="relative rounded-full border-4 border-[#111114] bg-[#111114] shadow-xl" alt="avatar">
+                    </div>
+                    
+                    <div class="text-center">
+                        <h1 class="text-2xl font-bold text-white tracking-tight">Your Name</h1>
+                        <p class="text-emerald-400 font-mono text-xs mb-6 uppercase tracking-widest">Full Stack Engineer</p>
+                    </div>
 
-        <hr style="margin:12px 0;border:none;border-top:1px solid #eee" />
+                    <button onclick="toggleContactModal(true)" class="w-full bg-emerald-500/10 border border-emerald-500/30 hover:bg-emerald-500 text-emerald-500 hover:text-white py-3 px-4 rounded-xl font-bold text-xs uppercase tracking-widest transition-all mb-6 flex items-center justify-center gap-2">
+                        <i data-lucide="sparkles" class="w-4 h-4"></i> Work With Me
+                    </button>
 
-        <div>
-          <strong style="display:block;margin-bottom:8px">Share & Unlock Withdraw</strong>
-          <button id="shareBtn" class="share-btn">Share on WhatsApp (<span id="shareCount">0</span>/6)</button>
-          <div class="share-progress" id="shareText">Share the game link to 6 people to unlock Withdraw.</div>
-        </div>
+                    <div class="border-t border-slate-800/50 pt-6 space-y-4">
+                        <h4 class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.3em] mb-4">Quick Stats</h4>
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-slate-500 flex items-center gap-2 italic"><i data-lucide="map-pin" class="w-3.5 h-3.5 text-emerald-500"></i> Location</span>
+                            <span class="text-white font-medium">Lagos, NG</span>
+                        </div>
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-slate-500 flex items-center gap-2 italic"><i data-lucide="clock" class="w-3.5 h-3.5 text-emerald-500"></i> Availability</span>
+                            <span class="text-emerald-400 font-medium">Remote Only</span>
+                        </div>
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-slate-500 flex items-center gap-2 italic"><i data-lucide="terminal" class="w-3.5 h-3.5 text-emerald-500"></i> Experience</span>
+                            <span class="text-white font-medium">5+ Years</span>
+                        </div>
 
-        <div class="withdraw" id="withdrawArea">
-          <div id="lockedNote" class="locked">
-            <div style="font-size:13px;color:var(--muted)">Withdraw is locked — reach top and share 6 times.</div>
-          </div>
-          <div id="withdrawBtnWrap"></div>
-        </div>
+                        <!-- Starting Rate Section -->
+                        <div class="mt-6 p-4 bg-emerald-500/5 border border-emerald-500/10 rounded-xl">
+                            <div class="text-[9px] font-bold text-emerald-500 uppercase tracking-widest mb-1 flex items-center gap-1"><i data-lucide="dollar-sign" class="w-2.5 h-2.5"></i> Starting Rate</div>
+                            <div class="flex items-baseline gap-1">
+                                <span class="text-2xl font-black text-white">$2,500</span>
+                                <span class="text-slate-500 text-[10px]">/ project</span>
+                            </div>
+                        </div>
 
-        <div style="margin-top:12px">
-          <strong>How earnings work</strong>
-          <ul style="color:var(--muted);padding-left:16px">
-            <li>1–20 clicks → ₦100</li>
-            <li>21–50 clicks → ₦500</li>
-            <li>51–100 clicks → ₦1,000</li>
-            <li>101+ clicks → ₦2,000</li>
-          </ul>
-        </div>
+                        <!-- About Me / Executive Bio -->
+                        <div class="mt-6 p-4 bg-slate-900/50 border border-slate-800 rounded-xl">
+                            <div class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-2 flex items-center gap-2 italic">
+                                <i data-lucide="info" class="w-3 h-3 text-emerald-500"></i> Executive Bio
+                            </div>
+                            <p class="text-[11px] leading-relaxed text-slate-400 font-medium italic">
+                                Dedicated software architect obsessed with crafting high-performance digital experiences. I bridge the gap between complex backend logic and fluid user interfaces, ensuring every line of code serves a purpose and every pixel contributes to the story.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
 
-        <div style="margin-top:8px" class="note">
-          NOTE: This demo simulates earnings locally. To process real payouts, connect a secure backend & payment provider.
-        </div>
-      </div>
-    </aside>
-  </div>
+        <!-- Main Content -->
+        <main class="lg:col-span-9 space-y-8">
+            
+            <!-- Quick Stats Cards -->
+            <header class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="bg-[#111114] border border-slate-800 p-4 rounded-xl flex items-center gap-4 group hover:border-emerald-500/30 transition-colors">
+                    <div class="p-2 bg-emerald-500/10 rounded-lg text-emerald-500"><i data-lucide="code" class="w-4 h-4"></i></div>
+                    <div>
+                        <div class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Lines of Code</div>
+                        <div class="text-lg font-bold text-white">45k+</div>
+                    </div>
+                </div>
+                <div class="bg-[#111114] border border-slate-800 p-4 rounded-xl flex items-center gap-4 group hover:border-emerald-500/30 transition-colors">
+                    <div class="p-2 bg-emerald-500/10 rounded-lg text-emerald-500"><i data-lucide="coffee" class="w-4 h-4"></i></div>
+                    <div>
+                        <div class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Coffee</div>
+                        <div class="text-lg font-bold text-white">842 cups</div>
+                    </div>
+                </div>
+                <div class="bg-[#111114] border border-slate-800 p-4 rounded-xl flex items-center gap-4 group hover:border-emerald-500/30 transition-colors">
+                    <div class="p-2 bg-emerald-500/10 rounded-lg text-emerald-500"><i data-lucide="zap" class="w-4 h-4"></i></div>
+                    <div>
+                        <div class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Projects</div>
+                        <div class="text-lg font-bold text-white">12</div>
+                    </div>
+                </div>
+                <div class="bg-[#111114] border border-slate-800 p-4 rounded-xl flex items-center gap-4 group hover:border-emerald-500/30 transition-colors">
+                    <div class="p-2 bg-emerald-500/10 rounded-lg text-emerald-500"><i data-lucide="heart" class="w-4 h-4"></i></div>
+                    <div>
+                        <div class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Satisfaction</div>
+                        <div class="text-lg font-bold text-white">100%</div>
+                    </div>
+                </div>
+            </header>
 
-  <!-- Modal -->
-  <div id="modal" class="modal-backdrop" role="dialog" aria-modal="true">
-    <div class="modal" role="document">
-      <h3 id="modalTitle">Withdraw Request</h3>
-      <div id="modalBody">
-        <div class="row">
-          <label>Amount</label>
-          <div id="modalAmount" style="font-weight:800">₦0</div>
-        </div>
-        <div class="row">
-          <label for="phone">Phone (for payment)</label>
-          <input id="phone" type="text" placeholder="+2348012345678" style="width:100%;padding:10px;border-radius:8px;border:1px solid #eee" />
-        </div>
-      </div>
-      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:10px">
-        <button id="modalCancel" class="btn ghost">Cancel</button>
-        <button id="modalSubmit" class="btn primary">Request Withdraw</button>
-      </div>
+            <!-- Technical Arsenal Section -->
+            <section class="bg-[#111114] border border-slate-800 rounded-2xl p-6 md:p-8 shadow-2xl relative group overflow-hidden">
+                <div class="flex items-center gap-3 mb-8">
+                    <div class="p-2 bg-emerald-500/10 rounded-lg text-emerald-500">
+                        <i data-lucide="cpu" class="w-5 h-5"></i>
+                    </div>
+                    <h2 class="text-xl font-bold text-white tracking-tight uppercase tracking-[0.2em]">Technical Arsenal</h2>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
+                    <!-- Frontend -->
+                    <div class="space-y-6">
+                        <div class="flex items-center gap-2 text-emerald-400">
+                            <i data-lucide="layers" class="w-4 h-4"></i>
+                            <h3 class="text-xs font-bold uppercase tracking-widest">Frontend</h3>
+                        </div>
+                        <div class="space-y-5">
+                            <div>
+                                <div class="flex justify-between text-xs mb-2"><span>React / Next.js</span><span class="text-emerald-500/70">95%</span></div>
+                                <div class="h-1.5 bg-slate-800 rounded-full"><div class="h-full bg-emerald-500 rounded-full" style="width: 95%"></div></div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs mb-2"><span>TypeScript</span><span class="text-emerald-500/70">90%</span></div>
+                                <div class="h-1.5 bg-slate-800 rounded-full"><div class="h-full bg-emerald-500 rounded-full" style="width: 90%"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Backend -->
+                    <div class="space-y-6">
+                        <div class="flex items-center gap-2 text-emerald-400">
+                            <i data-lucide="database" class="w-4 h-4"></i>
+                            <h3 class="text-xs font-bold uppercase tracking-widest">Backend</h3>
+                        </div>
+                        <div class="space-y-5">
+                            <div>
+                                <div class="flex justify-between text-xs mb-2"><span>Node.js</span><span class="text-emerald-500/70">88%</span></div>
+                                <div class="h-1.5 bg-slate-800 rounded-full"><div class="h-full bg-emerald-500 rounded-full" style="width: 88%"></div></div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs mb-2"><span>PostgreSQL</span><span class="text-emerald-500/70">85%</span></div>
+                                <div class="h-1.5 bg-slate-800 rounded-full"><div class="h-full bg-emerald-500 rounded-full" style="width: 85%"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- DevOps -->
+                    <div class="space-y-6">
+                        <div class="flex items-center gap-2 text-emerald-400">
+                            <i data-lucide="shield-check" class="w-4 h-4"></i>
+                            <h3 class="text-xs font-bold uppercase tracking-widest">DevOps</h3>
+                        </div>
+                        <div class="space-y-5">
+                            <div>
+                                <div class="flex justify-between text-xs mb-2"><span>AWS / Vercel</span><span class="text-emerald-500/70">78%</span></div>
+                                <div class="h-1.5 bg-slate-800 rounded-full"><div class="h-full bg-emerald-500 rounded-full" style="width: 78%"></div></div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs mb-2"><span>Docker</span><span class="text-emerald-500/70">75%</span></div>
+                                <div class="h-1.5 bg-slate-800 rounded-full"><div class="h-full bg-emerald-500 rounded-full" style="width: 75%"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Work History Section -->
+            <section class="space-y-6">
+                <div class="flex items-center gap-3">
+                    <i data-lucide="briefcase" class="w-5 h-5 text-emerald-500"></i>
+                    <h2 class="text-xl font-bold text-white tracking-tight uppercase tracking-[0.2em]">Work History</h2>
+                </div>
+                <div class="space-y-4">
+                    <div class="bg-[#111114] border border-slate-800 rounded-2xl p-6 md:p-8 hover:border-emerald-500/20 transition-all group">
+                        <div class="flex gap-4 mb-4">
+                            <div class="p-3 bg-emerald-500/10 rounded-xl text-emerald-500 h-fit"><i data-lucide="building-2" class="w-6 h-6"></i></div>
+                            <div>
+                                <h3 class="text-xl font-bold text-white tracking-tight">Senior Full Stack Engineer</h3>
+                                <div class="text-emerald-500 text-xs font-mono uppercase mt-1">Innovate AI • 2023 - Present</div>
+                            </div>
+                        </div>
+                        <p class="text-slate-400 text-sm leading-relaxed mb-6">Leading the development of a real-time AI-driven analytics dashboard. Optimized database queries resulting in a 40% performance boost.</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-3 py-1 bg-slate-900 border border-slate-800 rounded-full text-[10px] font-bold text-slate-500 uppercase tracking-widest">Next.js</span>
+                            <span class="px-3 py-1 bg-slate-900 border border-slate-800 rounded-full text-[10px] font-bold text-slate-500 uppercase tracking-widest">Python</span>
+                            <span class="px-3 py-1 bg-slate-900 border border-slate-800 rounded-full text-[10px] font-bold text-slate-500 uppercase tracking-widest">PostgreSQL</span>
+                            <span class="px-3 py-1 bg-slate-900 border border-slate-800 rounded-full text-[10px] font-bold text-slate-500 uppercase tracking-widest">AWS</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Project Gallery Carousel -->
+            <section class="space-y-6">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="layout" class="w-5 h-5 text-emerald-500"></i>
+                        <h2 class="text-xl font-bold text-white tracking-tight uppercase tracking-[0.2em]">Project Gallery</h2>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <button onclick="toggleFullscreen(true)" class="text-xs font-bold uppercase tracking-widest text-emerald-500 hover:text-emerald-400 transition-colors flex items-center gap-2 bg-emerald-500/5 px-4 py-2 rounded-lg border border-emerald-500/10">
+                            <i data-lucide="maximize-2" class="w-3.5 h-3.5"></i> Full Screen
+                        </button>
+                        <div class="flex gap-2">
+                            <button onclick="moveCarousel(-1)" class="p-2 bg-slate-800 rounded-lg hover:bg-emerald-500 transition-colors group">
+                                <i data-lucide="chevron-left" class="w-5 h-5 text-white group-hover:text-white"></i>
+                            </button>
+                            <button onclick="moveCarousel(1)" class="p-2 bg-slate-800 rounded-lg hover:bg-emerald-500 transition-colors group">
+                                <i data-lucide="chevron-right" class="w-5 h-5 text-white group-hover:text-white"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="relative overflow-hidden rounded-2xl">
+                    <div id="carousel" class="carousel-container flex gap-6">
+                        <!-- Project 1 -->
+                        <div class="min-w-full md:min-w-[48%] bg-[#111114] border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+                            <img src="https://images.unsplash.com/photo-1551288049-bbbda536339a?auto=format&fit=crop&q=80&w=800" class="w-full h-48 object-cover opacity-80" alt="p1">
+                            <div class="p-6">
+                                <h3 class="text-white font-bold mb-2 uppercase tracking-wide">AI Analytics Engine</h3>
+                                <p class="text-slate-400 text-xs leading-relaxed">Enterprise-grade data visualization platform.</p>
+                            </div>
+                        </div>
+                        <!-- Project 2 -->
+                        <div class="min-w-full md:min-w-[48%] bg-[#111114] border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+                            <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800" class="w-full h-48 object-cover opacity-80" alt="p2">
+                            <div class="p-6">
+                                <h3 class="text-white font-bold mb-2 uppercase tracking-wide">Crypto Wallet UI</h3>
+                                <p class="text-slate-400 text-xs leading-relaxed">Secure multi-chain asset management dashboard.</p>
+                            </div>
+                        </div>
+                        <!-- Project 3 -->
+                        <div class="min-w-full md:min-w-[48%] bg-[#111114] border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+                            <img src="https://images.unsplash.com/photo-1558655146-d09347e92766?auto=format&fit=crop&q=80&w=800" class="w-full h-48 object-cover opacity-80" alt="p3">
+                            <div class="p-6">
+                                <h3 class="text-white font-bold mb-2 uppercase tracking-wide">SaaS Landing Page</h3>
+                                <p class="text-slate-400 text-xs leading-relaxed">High-converting page for cloud infrastructure.</p>
+                            </div>
+                        </div>
+                        <!-- Project 4 -->
+                        <div class="min-w-full md:min-w-[48%] bg-[#111114] border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+                            <img src="https://images.unsplash.com/photo-1454165833767-12d861678120?auto=format&fit=crop&q=80&w=800" class="w-full h-48 object-cover opacity-80" alt="p4">
+                            <div class="p-6">
+                                <h3 class="text-white font-bold mb-2 uppercase tracking-wide">E-Commerce Core</h3>
+                                <p class="text-slate-400 text-xs leading-relaxed">Headless commerce solution with Stripe integration.</p>
+                            </div>
+                        </div>
+                        <!-- Project 5 -->
+                        <div class="min-w-full md:min-w-[48%] bg-[#111114] border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+                            <img src="https://images.unsplash.com/photo-1504868584819-f8eec2421d50?auto=format&fit=crop&q=80&w=800" class="w-full h-48 object-cover opacity-80" alt="p5">
+                            <div class="p-6">
+                                <h3 class="text-white font-bold mb-2 uppercase tracking-wide">Real-time Chat App</h3>
+                                <p class="text-slate-400 text-xs leading-relaxed">Websocket-based messaging platform with encryption.</p>
+                            </div>
+                        </div>
+                        <!-- Project 6 -->
+                        <div class="min-w-full md:min-w-[48%] bg-[#111114] border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+                            <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&q=80&w=800" class="w-full h-48 object-cover opacity-80" alt="p6">
+                            <div class="p-6">
+                                <h3 class="text-white font-bold mb-2 uppercase tracking-wide">Cybersecurity Monitor</h3>
+                                <p class="text-slate-400 text-xs leading-relaxed">Intrusion detection dashboard for cloud nodes.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Education Section -->
+            <section class="space-y-6">
+                <div class="flex items-center gap-3">
+                    <i data-lucide="graduation-cap" class="w-5 h-5 text-emerald-500"></i>
+                    <h2 class="text-xl font-bold text-white tracking-tight uppercase tracking-[0.2em]">Education</h2>
+                </div>
+                <div class="bg-[#111114] border border-slate-800 rounded-2xl p-6 md:p-8 hover:border-emerald-500/20 transition-all">
+                    <div class="flex gap-4">
+                        <div class="p-3 bg-emerald-500/10 rounded-xl text-emerald-500 h-fit"><i data-lucide="award" class="w-6 h-6"></i></div>
+                        <div>
+                            <h3 class="text-lg font-bold text-white tracking-tight">B.Sc. in Computer Science</h3>
+                            <div class="text-emerald-500 text-xs font-mono uppercase mt-1">University of Technology • 2016 - 2020</div>
+                            <p class="text-slate-400 text-sm mt-3 leading-relaxed italic">Specialized in Distributed Systems and Algorithmic Efficiency. Graduated with honors.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Expanded Work Experience -->
+            <section class="space-y-6">
+                <div class="flex items-center gap-3">
+                    <i data-lucide="history" class="w-5 h-5 text-emerald-500"></i>
+                    <h2 class="text-xl font-bold text-white tracking-tight uppercase tracking-[0.2em]">Experience Timeline</h2>
+                </div>
+                <div class="space-y-4">
+                    <div class="bg-[#111114] border border-slate-800 rounded-2xl p-6 md:p-8 hover:border-emerald-500/20 transition-all group">
+                        <div class="flex gap-4 mb-4">
+                            <div class="p-3 bg-emerald-500/10 rounded-xl text-emerald-500 h-fit"><i data-lucide="terminal" class="w-6 h-6"></i></div>
+                            <div>
+                                <h3 class="text-xl font-bold text-white tracking-tight">Backend Developer</h3>
+                                <div class="text-emerald-500 text-xs font-mono uppercase mt-1">CloudSystems Inc • 2021 - 2023</div>
+                            </div>
+                        </div>
+                        <p class="text-slate-400 text-sm leading-relaxed mb-4">Engineered scalable microservices handling 1M+ daily requests. Migrated legacy infrastructure to AWS Lambda.</p>
+                    </div>
+                    
+                    <div class="bg-[#111114] border border-slate-800 rounded-2xl p-6 md:p-8 hover:border-emerald-500/20 transition-all group opacity-80">
+                        <div class="flex gap-4 mb-4">
+                            <div class="p-3 bg-emerald-500/10 rounded-xl text-emerald-500 h-fit"><i data-lucide="code-2" class="w-6 h-6"></i></div>
+                            <div>
+                                <h3 class="text-xl font-bold text-white tracking-tight">Junior Web Developer</h3>
+                                <div class="text-emerald-500 text-xs font-mono uppercase mt-1">Digital Pulse Agency • 2020 - 2021</div>
+                            </div>
+                        </div>
+                        <p class="text-slate-400 text-sm leading-relaxed mb-4">Developed responsive UI components and managed client CMS integrations.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Reviews Section -->
+            <section class="space-y-6">
+                <div class="flex items-center gap-3">
+                    <i data-lucide="star" class="w-5 h-5 text-emerald-500 fill-emerald-500/20"></i>
+                    <h2 class="text-xl font-bold text-white tracking-tight uppercase tracking-[0.2em]">Client Endorsements</h2>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-[#111114] border border-slate-800 p-6 rounded-2xl relative overflow-hidden group hover:border-emerald-500/30 transition-all">
+                        <div class="flex gap-1 mb-4 text-emerald-500">
+                            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
+                            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
+                            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
+                            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
+                            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
+                        </div>
+                        <p class="text-slate-400 text-xs leading-relaxed mb-6 italic relative z-10">
+                            "The architectural depth brought to our project was outstanding. Scaled our platform to 10k concurrent users effortlessly."
+                        </p>
+                        <div class="flex items-center gap-3 pt-4 border-t border-slate-800/50">
+                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Alex" class="w-10 h-10 rounded-full border border-slate-700 p-0.5" alt="Alex">
+                            <div>
+                                <div class="flex items-center gap-1">
+                                    <h4 class="text-white text-[11px] font-black uppercase tracking-wider">Alex Thompson</h4>
+                                    <i data-lucide="check-circle-2" class="w-2.5 h-2.5 text-emerald-500"></i>
+                                </div>
+                                <p class="text-emerald-500/60 text-[9px] font-mono">TechNexus</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-[#111114] border border-slate-800 p-6 rounded-2xl relative overflow-hidden group hover:border-emerald-500/30 transition-all">
+                        <div class="flex gap-1 mb-4 text-emerald-500">
+                            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
+                            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
+                            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
+                            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
+                            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
+                        </div>
+                        <p class="text-slate-400 text-xs leading-relaxed mb-6 italic relative z-10">
+                            "Remarkable eye for detail. The frontend implementation was pixel-perfect and the performance is lightning fast."
+                        </p>
+                        <div class="flex items-center gap-3 pt-4 border-t border-slate-800/50">
+                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah" class="w-10 h-10 rounded-full border border-slate-700 p-0.5" alt="Sarah">
+                            <div>
+                                <div class="flex items-center gap-1">
+                                    <h4 class="text-white text-[11px] font-black uppercase tracking-wider">Sarah Chen</h4>
+                                    <i data-lucide="check-circle-2" class="w-2.5 h-2.5 text-emerald-500"></i>
+                                </div>
+                                <p class="text-emerald-500/60 text-[9px] font-mono">FlowState UI</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-[#111114] border border-slate-800 p-6 rounded-2xl relative overflow-hidden group hover:border-emerald-500/30 transition-all">
+                        <div class="flex gap-1 mb-4 text-emerald-500">
+                            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
+                            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
+                            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
+                            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
+                            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
+                        </div>
+                        <p class="text-slate-400 text-xs leading-relaxed mb-6 italic relative z-10">
+                            "Incredibly reliable. Fixed complex security vulnerabilities and optimized our entire CI/CD pipeline in record time."
+                        </p>
+                        <div class="flex items-center gap-3 pt-4 border-t border-slate-800/50">
+                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=James" class="w-10 h-10 rounded-full border border-slate-700 p-0.5" alt="James">
+                            <div>
+                                <div class="flex items-center gap-1">
+                                    <h4 class="text-white text-[11px] font-black uppercase tracking-wider">James Wilson</h4>
+                                    <i data-lucide="check-circle-2" class="w-2.5 h-2.5 text-emerald-500"></i>
+                                </div>
+                                <p class="text-emerald-500/60 text-[9px] font-mono">SecureLink</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
     </div>
-  </div>
 
-<script>
-(() => {
-  // Elements
-  const bigBtn = document.getElementById('bigBtn');
-  const scoreEl = document.getElementById('score');
-  const timeEl = document.getElementById('time');
-  const highEl = document.getElementById('high');
-  const startBtn = document.getElementById('start');
-  const resetBtn = document.getElementById('reset');
-  const durationSel = document.getElementById('duration');
-  const autostartSel = document.getElementById('autostart');
-  const muteBtn = document.getElementById('mute');
-  const shareBtn = document.getElementById('shareBtn');
-  const shareCountEl = document.getElementById('shareCount');
-  const shareText = document.getElementById('shareText');
-  const walletEl = document.getElementById('wallet');
-  const withdrawArea = document.getElementById('withdrawArea');
-  const withdrawBtnWrap = document.getElementById('withdrawBtnWrap');
-  const lockedNote = document.getElementById('lockedNote');
+    <!-- Contact Modal -->
+    <div id="contact-modal" class="hidden fixed inset-0 z-[120] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+        <div class="bg-[#111114] border border-emerald-500/30 w-full max-w-lg rounded-3xl overflow-hidden shadow-2xl animate-fade-in">
+            <div class="bg-gradient-to-r from-emerald-600 to-emerald-800 p-8 flex justify-between items-center">
+                <div>
+                    <h3 class="text-2xl font-black text-white tracking-tighter flex items-center gap-2">
+                        <i data-lucide="message-square" class="w-6 h-6"></i> Get In Touch
+                    </h3>
+                    <p class="text-emerald-100/70 text-xs font-medium uppercase tracking-widest mt-1">Direct communication channel</p>
+                </div>
+                <button onclick="toggleContactModal(false)" class="p-2 hover:bg-white/10 rounded-full transition-colors text-white">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <div class="p-8">
+                <a id="whatsapp-link" href="#" target="_blank" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-4 rounded-2xl flex items-center justify-center gap-3 transition-all group shadow-lg no-underline">
+                    <i data-lucide="send" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                    Start Chat on WhatsApp
+                </a>
+            </div>
+        </div>
+    </div>
 
-  // Modal elements
-  const modal = document.getElementById('modal');
-  const modalAmount = document.getElementById('modalAmount');
-  const modalCancel = document.getElementById('modalCancel');
-  const modalSubmit = document.getElementById('modalSubmit');
-  const phoneInput = document.getElementById('phone');
-  const modalTitle = document.getElementById('modalTitle');
+    <!-- Full Screen Gallery Modal -->
+    <div id="fullscreen-gallery" class="hidden fixed inset-0 z-[200] bg-[#0a0a0c]/95 backdrop-blur-xl flex-col items-center justify-center p-4 md:p-12">
+        <!-- Close Button & Controls -->
+        <div class="absolute top-8 right-8 flex gap-4">
+            <button onclick="toggleFullscreen(false)" class="p-4 bg-white/5 border border-white/10 hover:bg-white/10 text-white rounded-full transition-all group backdrop-blur-md">
+                <i data-lucide="minimize-2" class="w-6 h-6 group-hover:scale-110 transition-transform"></i>
+            </button>
+        </div>
 
-  // confetti
-  const confettiCanvas = document.getElementById('confetti');
-  const confettiCtx = confettiCanvas.getContext('2d');
-  function fitCanvas(){ confettiCanvas.width = confettiCanvas.offsetWidth; confettiCanvas.height = confettiCanvas.offsetHeight; }
-  window.addEventListener('resize', fitCanvas);
-  fitCanvas();
+        <!-- Navigation Buttons -->
+        <button onclick="moveCarousel(-1)" class="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 p-4 bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 hover:bg-emerald-500 hover:text-white rounded-full transition-all group z-50">
+            <i data-lucide="chevron-left" class="w-8 h-8 group-hover:-translate-x-1 transition-transform"></i>
+        </button>
+        <button onclick="moveCarousel(1)" class="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 p-4 bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 hover:bg-emerald-500 hover:text-white rounded-full transition-all group z-50">
+            <i data-lucide="chevron-right" class="w-8 h-8 group-hover:translate-x-1 transition-transform"></i>
+        </button>
 
-  // Game state
-  let duration = parseInt(durationSel.value,10);
-  let timeLeft = duration;
-  let score = 0;
-  let running = false;
-  let timerId = null;
-  let highScore = parseInt(localStorage.getItem('ctw_high')||'0',10);
-  let wallet = parseInt(localStorage.getItem('ctw_wallet')||'0',10);
-  let shareCount = parseInt(localStorage.getItem('ctw_shares')||'0',10);
-  let soundOn = true;
+        <!-- Carousel Container (Mirrored from Gallery) -->
+        <div id="fullscreen-container" class="w-full max-w-6xl overflow-hidden rounded-3xl shadow-[0_0_100px_rgba(16,185,129,0.1)] border border-white/5">
+            <!-- This will be populated by JS or just serve as a viewport for the original carousel -->
+        </div>
 
-  // UI init
-  highEl.innerText = highScore;
-  walletEl.innerText = `₦${wallet}`;
-  shareCountEl.innerText = shareCount;
+        <!-- Status Info -->
+        <div class="absolute bottom-12 text-center space-y-2">
+            <h2 id="fs-title" class="text-2xl font-black text-white uppercase tracking-widest">Project Name</h2>
+            <p id="fs-desc" class="text-emerald-500 font-mono text-xs uppercase tracking-[0.3em]">Project Category</p>
+        </div>
+    </div>
 
-  // Audio (simple)
-  const audioCtx = new (window.AudioContext||window.webkitAudioContext)();
-  function clickTone(){
-    if (!soundOn) return;
-    const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
-    o.type='sine'; o.frequency.value = 900 + Math.random()*200;
-    g.gain.value = 0.07;
-    o.connect(g); g.connect(audioCtx.destination);
-    o.start(); o.frequency.exponentialRampToValueAtTime(600, audioCtx.currentTime + 0.08);
-    g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.12);
-    o.stop(audioCtx.currentTime + 0.14);
-  }
-  function winTone(){
-    if (!soundOn) return;
-    const now = audioCtx.currentTime;
-    const g = audioCtx.createGain(); g.connect(audioCtx.destination); g.gain.value = 0.06;
-    const o1 = audioCtx.createOscillator(); o1.type='sine'; o1.frequency.value=440; o1.connect(g); o1.start(now);
-    const o2 = audioCtx.createOscillator(); o2.type='triangle'; o2.frequency.value=660; o2.connect(g); o2.start(now);
-    o1.frequency.exponentialRampToValueAtTime(800, now+0.25);
-    o2.frequency.exponentialRampToValueAtTime(1100, now+0.25);
-    g.gain.exponentialRampToValueAtTime(0.001, now+0.6);
-    o1.stop(now+0.6); o2.stop(now+0.6);
-  }
+    <footer class="mt-12 py-8 border-t border-slate-900 text-center text-slate-600 text-[9px] font-mono uppercase tracking-[0.6em]">
+        System Status: Optimal &bull; Design v4.5.0 &bull; 2025
+    </footer>
 
-  // score -> earnings logic (Naira)
-  function earningsForScore(s){
-    if (s <= 20) return 100;
-    if (s <= 50) return 500;
-    if (s <= 100) return 1000;
-    return 2000;
-  }
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
 
-  function updateUI(){
-    scoreEl.innerText = score;
-    timeEl.innerText = `${Math.ceil(timeLeft)}s`;
-    highEl.innerText = highScore;
-    walletEl.innerText = `₦${wallet}`;
-    shareCountEl.innerText = shareCount;
-    // withdraw button render
-    renderWithdraw();
-  }
+        // Carousel Logic
+        let currentPos = 0;
+        const carousel = document.getElementById('carousel');
+        const fsGallery = document.getElementById('fullscreen-gallery');
+        const fsContainer = document.getElementById('fullscreen-container');
+        
+        function moveCarousel(direction) {
+            const items = carousel.children;
+            // Desktop visible depends on if we are in fullscreen or not
+            const isFS = fsGallery.classList.contains('active');
+            const visibleItems = isFS ? 1 : (window.innerWidth >= 768 ? 2 : 1);
+            
+            const gap = 24;
+            const containerWidth = isFS ? fsContainer.offsetWidth : carousel.parentElement.offsetWidth;
+            const itemWidth = isFS ? containerWidth : (items[0].offsetWidth + gap);
+            
+            const maxPos = items.length - visibleItems;
+            
+            currentPos += direction;
+            if (currentPos < 0) currentPos = 0;
+            if (currentPos > maxPos) currentPos = maxPos;
+            
+            carousel.style.transition = "transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)";
+            carousel.style.transform = `translateX(-${currentPos * itemWidth}px)`;
+            
+            // Update FS labels if needed
+            if (isFS) updateFullscreenLabels(currentPos);
+        }
 
-  // big button interactions
-  bigBtn.addEventListener('pointerdown', (e)=>{ e.preventDefault(); handleClick(); });
-  bigBtn.addEventListener('keydown', (e) => { if (e.code==='Space' || e.code==='Enter'){ e.preventDefault(); handleClick(); } });
+        function toggleFullscreen(show) {
+            const items = carousel.children;
+            
+            if (show) {
+                fsGallery.classList.remove('hidden');
+                setTimeout(() => fsGallery.classList.add('active'), 10);
+                
+                // Move carousel into the fullscreen container
+                fsContainer.appendChild(carousel);
+                
+                // Reset styling for full-screen look
+                Array.from(items).forEach(item => {
+                    item.style.minWidth = "100%";
+                    item.style.border = "none";
+                    item.style.background = "transparent";
+                });
+                
+                document.body.classList.add('modal-active');
+                currentPos = 0; // Reset to first item
+                moveCarousel(0);
+            } else {
+                fsGallery.classList.remove('active');
+                setTimeout(() => {
+                    fsGallery.classList.add('hidden');
+                    // Return carousel to original home
+                    document.querySelector('.relative.overflow-hidden.rounded-2xl').appendChild(carousel);
+                    
+                    // Reset styling to original grid look
+                    Array.from(items).forEach(item => {
+                        item.style.minWidth = window.innerWidth >= 768 ? "48%" : "100%";
+                        item.style.border = "";
+                        item.style.background = "";
+                    });
+                    
+                    document.body.classList.remove('modal-active');
+                    currentPos = 0;
+                    moveCarousel(0);
+                }, 400);
+            }
+        }
 
-  function handleClick(){
-    if (!running){
-      if (autostartSel.value === 'yes'){ startGame(); }
-      else return;
-    }
-    score++;
-    scoreEl.innerText = score;
-    animateBtn();
-    clickTone();
-  }
+        function updateFullscreenLabels(pos) {
+            const items = carousel.children;
+            const item = items[pos];
+            const title = item.querySelector('h3').innerText;
+            const desc = item.querySelector('p').innerText;
+            
+            document.getElementById('fs-title').innerText = title;
+            document.getElementById('fs-desc').innerText = desc;
+        }
 
-  function animateBtn(){
-    bigBtn.classList.remove('dance');
-    void bigBtn.offsetWidth;
-    bigBtn.classList.add('dance');
-    setTimeout(()=> bigBtn.classList.remove('dance'), 1000);
-  }
+        // Config constants
+        const WHATSAPP_NUMBER = "2348001234567";
+        const DEFAULT_MSG = encodeURIComponent("Hello! I saw your portfolio and would like to discuss a project.");
 
-  // start / end game
-  startBtn.addEventListener('click', startGame);
-  durationSel.addEventListener('change', ()=> { duration = parseInt(durationSel.value,10); timeLeft = duration; timeEl.innerText = `${timeLeft}s`; });
+        // UI Functions
+        function toggleContactModal(show) {
+            const modal = document.getElementById('contact-modal');
+            const link = document.getElementById('whatsapp-link');
+            
+            if (show) {
+                link.href = `https://wa.me/${WHATSAPP_NUMBER}?text=${DEFAULT_MSG}`;
+                modal.classList.remove('hidden');
+                document.body.classList.add('modal-active');
+            } else {
+                modal.classList.add('hidden');
+                document.body.classList.remove('modal-active');
+            }
+        }
 
-  function startGame(){
-    if (running) return;
-    // resume audio context (user gesture)
-    if (audioCtx.state === 'suspended') audioCtx.resume().catch(()=>{});
-    duration = parseInt(durationSel.value,10);
-    timeLeft = duration;
-    score = 0;
-    running = true;
-    startBtn.disabled = true;
-    startBtn.innerText = 'In Progress...';
-    updateUI();
-    timerId = setInterval(()=> {
-      timeLeft -= 0.1;
-      if (timeLeft <= 0) timeLeft = 0;
-      timeEl.innerText = `${Math.ceil(timeLeft)}s`;
-      if (timeLeft <= 0.01){ endGame(); }
-    }, 100);
-  }
+        // Global Key Listeners
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                toggleContactModal(false);
+                toggleFullscreen(false);
+            }
+            if (fsGallery.classList.contains('active')) {
+                if (e.key === 'ArrowRight') moveCarousel(1);
+                if (e.key === 'ArrowLeft') moveCarousel(-1);
+            }
+        });
 
-  function endGame(){
-    if (!running) return;
-    running = false;
-    clearInterval(timerId);
-    startBtn.disabled = false;
-    startBtn.innerText = 'Start';
-    // evaluate high score & earnings
-    const prevHigh = highScore;
-    if (score > highScore){
-      highScore = score;
-      localStorage.setItem('ctw_high', highScore);
-      // award earnings based on score tiers
-      const earn = earningsForScore(score);
-      wallet += earn;
-      localStorage.setItem('ctw_wallet', wallet);
-      // celebrate
-      winTone();
-      popConfetti();
-      showCongrats(earn);
-    } else {
-      // small pop for no new high
-      clickTone();
-    }
-    updateUI();
-  }
+        // Close on clicking the backdrop
+        document.getElementById('contact-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'contact-modal') toggleContactModal(false);
+        });
 
-  // Reset highscore
-  resetBtn.addEventListener('click', ()=> {
-    if (!confirm('Reset saved high score?')) return;
-    highScore = 0; localStorage.setItem('ctw_high','0'); highEl.innerText = '0';
-  });
-
-  // Mute toggle
-  muteBtn.addEventListener('click', ()=> { soundOn = !soundOn; muteBtn.innerText = soundOn ? 'Mute' : 'Unmute'; });
-
-  // Share logic (WhatsApp)
-  shareBtn.addEventListener('click', () => {
-    const text = encodeURIComponent(`I just played Click-to-Earn! Try to beat my score. Play here: ${location.href}`);
-    const wa = `https://wa.me/?text=${text}`;
-    // open new window/tab
-    window.open(wa,'_blank');
-    // We'll assume share attempt counts (front-end). Increment and persist.
-    shareCount++;
-    if (shareCount > 200) shareCount = 200; // safety cap
-    localStorage.setItem('ctw_shares', shareCount);
-    shareCountEl.innerText = shareCount;
-    if (shareCount >= 6){
-      shareText.innerText = 'Great! You have shared enough times — Withdraw is unlocked!';
-    } else {
-      shareText.innerText = `Shared ${shareCount}/6. Share ${6-shareCount} more to unlock Withdraw.`;
-    }
-    renderWithdraw();
-  });
-
-  // Withdraw rendering
-  function renderWithdraw(){
-    withdrawBtnWrap.innerHTML = '';
-    if (wallet <= 0){
-      lockedNote.innerHTML = `<div style="font-size:13px;color:var(--muted)">You have no wallet balance to withdraw.</div>`;
-      return;
-    }
-    if (shareCount < 6){
-      // show locked state
-      lockedNote.innerHTML = `<div style="font-size:13px;color:var(--muted)">Withdraw locked. Share ${6-shareCount} more times to unlock.</div>`;
-      return;
-    }
-    // unlocked - show animated withdraw button
-    lockedNote.innerHTML = '';
-    const btn = document.createElement('button');
-    btn.className = 'btn primary unlocked';
-    btn.innerText = 'Withdraw Now';
-    btn.addEventListener('click', ()=> openWithdrawModal());
-    withdrawBtnWrap.appendChild(btn);
-  }
-  renderWithdraw();
-
-  // Modal logic (simulate withdraw request)
-  function openWithdrawModal(){
-    modalAmount.innerText = `₦${wallet}`;
-    modal.style.display = 'flex';
-    phoneInput.value = '';
-  }
-  modalCancel.addEventListener('click', ()=> { modal.style.display = 'none'; });
-  modal.addEventListener('click', (e)=> { if (e.target === modal) modal.style.display='none'; });
-
-  modalSubmit.addEventListener('click', ()=> {
-    const phone = phoneInput.value.trim();
-    if (!phone || phone.length < 8){ alert('Please enter a valid phone number for payment'); return; }
-    // simulate request
-    modalSubmit.disabled = true; modalSubmit.innerText = 'Requesting...';
-    setTimeout(()=> {
-      // success simulation
-      const amount = wallet;
-      wallet = 0;
-      localStorage.setItem('ctw_wallet','0');
-      modalSubmit.disabled = false; modalSubmit.innerText = 'Request Withdraw';
-      modal.style.display = 'none';
-      alert(`Withdraw request for ₦${amount} submitted!\nOur team will process payment to ${phone} (simulation).`);
-      // optional: reset shares so user must share again next time
-      shareCount = 0; localStorage.setItem('ctw_shares','0');
-      shareCountEl.innerText = shareCount;
-      shareText.innerText = 'Share the game link to 6 people to unlock Withdraw.';
-      updateUI();
-    }, 1400);
-  });
-
-    // Congratulation modal / toast (simple)
-  function showCongrats(amount){
-    // quick toast-like in-page message
-    const t = document.createElement('div');
-    t.style.position = 'fixed';
-    t.style.left = '50%';
-    t.style.top = '12%';
-    t.style.transform = 'translateX(-50%)';
-    t.style.background = 'linear-gradient(90deg,#fff,#fffef6)';
-    t.style.padding = '12px 16px';
-    t.style.borderRadius = '12px';
-    t.style.boxShadow = '0 12px 30px rgba(10,30,60,0.12)';
-    t.style.zIndex = 9999;
-    t.innerHTML = `<strong style="display:block">🎉 New High Score!</strong><div style="font-size:14px;margin-top:6px">You earned ₦${amount} — your wallet was credited.</div>`;
-    document.body.appendChild(t);
-    setTimeout(()=> t.style.opacity = '0', 2200);
-    setTimeout(()=> t.remove(), 2600);
-  }
-
-  // Simple confetti
-  let particles = [];
-  function popConfetti(){
-    const w = confettiCanvas.width, h = confettiCanvas.height;
-    for (let i=0;i<80;i++){
-      particles.push({
-        x: w/2 + (Math.random()-0.5)*160,
-        y: h/3 + (Math.random()-0.5)*80,
-        vx: (Math.random()-0.5)*10,
-        vy: (Math.random()*-8)-2,
-        size: 6 + Math.random()*10,
-        color: ['#ff6b6b','#ffd93d','#6be4ff','#9bff6b','#ff9bd6'][Math.floor(Math.random()*5)],
-        life: 80 + Math.random()*60,
-        rot: Math.random()*360
-      });
-    }
-    runConfetti();
-  }
-  let confRunning = false;
-  function runConfetti(){
-    if (confRunning) return;
-    confRunning = true;
-    function frame(){
-      confettiCtx.clearRect(0,0,confettiCanvas.width, confettiCanvas.height);
-      for (let i=particles.length-1;i>=0;i--){
-        const p = particles[i];
-        p.vy += 0.3;
-        p.x += p.vx; p.y += p.vy; p.rot += p.vx*0.5; p.life--;
-        confettiCtx.save();
-        confettiCtx.translate(p.x,p.y);
-        confettiCtx.rotate(p.rot*Math.PI/180);
-        confettiCtx.fillStyle = p.color;
-        confettiCtx.fillRect(-p.size/2, -p.size/2, p.size, p.size*0.6);
-        confettiCtx.restore();
-        if (p.life<=0 || p.y > confettiCanvas.height + 40) particles.splice(i,1);
-      }
-      if (particles.length>0) requestAnimationFrame(frame); else confRunning = false;
-    }
-    frame();
-  }
-
-  // load initial state
-  updateUI();
-
-  // keyboard shortcuts
-  document.addEventListener('keydown', (e)=> {
-    if (e.key.toLowerCase() === 's') startGame();
-    if (e.key.toLowerCase() === 'r') {
-      if (confirm('Reset saved high score?')) { localStorage.setItem('ctw_high','0'); highScore = 0; updateUI(); }
-    }
-  });
-
-  // ensure audio context resumed on first user gesture
-  document.addEventListener('pointerdown', ()=> { if (audioCtx.state === 'suspended') audioCtx.resume().catch(()=>{}); }, { once:true });
-
-})();
-</script>
-<script>
-const bgMusic = document.getElementById("bgMusic");
-if (bgMusic.paused) {
-  bgMusic.play();
-}
-</script>
+        // Re-calculate position on resize to keep carousel aligned
+        window.addEventListener('resize', () => {
+            const isFS = fsGallery.classList.contains('active');
+            if (!isFS) {
+                const items = carousel.children;
+                Array.from(items).forEach(item => {
+                    item.style.minWidth = window.innerWidth >= 768 ? "48%" : "100%";
+                });
+                const itemWidth = items[0].offsetWidth + 24;
+                carousel.style.transform = `translateX(-${currentPos * itemWidth}px)`;
+            }
+        });
+    </script>
 </body>
 </html>

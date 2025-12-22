@@ -194,7 +194,7 @@ section .title::after {
 /* home section styling */
 .home {
   display: flex;
-  background: url("images/banner.jpg") no-repeat center;
+  background: url("https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj79IFLz9_ys0WFlIQiLKea5fWcKzqAtAbn35Li3bUwiecKhl61LKMFuKlsjkTsRhE1sffGhBfutOD1yu7idCkhc3otZ2hSA8XeoW4mhIwnIGBedPMq2P8L3DGyjjYOICx8HVtGe823pffzexzJMmmmNOMwgFg0AJwTXv0W1dp8ehtu9txLJs8UBrCHYLc/s491/582128286_1255512383280270_7902033663755514354_n.jpg") no-repeat center;
   height: 100vh;
   color: #fff;
   min-height: 500px;
